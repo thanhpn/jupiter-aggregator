@@ -35,7 +35,7 @@ func main() {
 
 	// submit swap transaction
 	rpcClient := client.NewClient("https://api.mainnet-beta.solana.com")
-	privateKey := "A5s1WoriaNbYkgi2LGvQ1TzcbmVLFBzyfc1BU1xfD6GHADPSNfQCR8DfB9rwdD3aVpjHSAqi5acyzo9jaxWu3nB"
+	privateKey := ""
 	centralAcc, _ := types.AccountFromBase58(privateKey)
 
 	// decode transaction
@@ -47,6 +47,12 @@ func main() {
 	if err != nil {
 		fmt.Errorf("failed to deserialize transaction, err: %v", err)
 	}
+
+	blockhash, err := rpcClient.GetLatestBlockhash(context.Background())
+	if err != nil {
+		fmt.Errorf("client.GetLatestBlockhash() failed", err)
+	}
+	tx.Message.RecentBlockHash = blockhash.Blockhash
 
 	// sign transaction
 	data, err := tx.Message.Serialize()
